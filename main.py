@@ -4,6 +4,8 @@ from matplotlib import pyplot as plt
 from skimage.filters import prewitt_h, prewitt_v
 from skimage.transform import rotate, rescale
 from cv2 import line
+from scipy.io import loadmat
+
 # ====================================  Part 1  ====================================
 def calc_grad(pyramid_dx, pyramid_dy, point, filter):
     scale_index_dict = {1: 0, 2: 1, 4: 2, 8: 3, 16: 4}
@@ -167,7 +169,27 @@ def compare_sift(img1, img2, siftList1, siftList2, location1, location2, window_
 def compute_Bhattacharyya_coefficient(x1, x2):
     coefficient = np.sqrt(np.multiply(x1[3:]/x1[3:].sum(), x2[3:]/x2[3:].sum())).sum()
     return coefficient
+def mat_lab_provided_code():
+    sift_features = loadmat('sift_features.mat')
+    print(sift_features.keys())
+    features_1 = sift_features["features_1"]
+    keypoints_1 = sift_features["keypoints_1"]
+
+    features_2 = sift_features["features_2"]
+    keypoints_2 = sift_features["keypoints_2"]
+    theta = sift_features["theta"]
+    img = np.array(sift_features['image'])
+    key_points_1 = np.array(keypoints_1) # (4, 962)
+    features1 = np.array(features_1) # (128, 962)
+    key_points_1_mod = []
+    for i in range(0, key_points_1.shape[1]):
+        key_points_1_mod.append([key_points_1[0, i], key_points_1[1, i], 4])
+    display_blob_on_img(key_points_1_mod, img)
+    # plt.imshow(img, cmap="gray")
+    # plt.show()
 if __name__ == "__main__":
+    mat_lab_provided_code()
+    A[1]
     img = read_img_gs("UofT.jpg")
     # save_pyramid(gen_gaussian_pyramid(img), name="gaussian_pyramid")
     # save_pyramid(gen_dog_pyramid(img), name="dog_pyramid")
@@ -180,3 +202,4 @@ if __name__ == "__main__":
     original_sift = np.load("temp/original_img_sift_descriptors.npy")
     compare_sift(large_img, img, large_sifts, original_sift, [512, 512], [200, 500], window_size=200)
     # blob_detection(smol_img, gen_dog_pyramid(smol_img))
+
